@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Queue different songs from your Spotify playlists and keep your place between sessions.">
+  <title>Fresh Queue</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <a class="brand" href="/" aria-label="Fresh Queue home"><span class="brand-mark" aria-hidden="true">≋</span> Fresh Queue</a>
+      <span id="connection" class="connection">Checking connection…</span>
+    </header>
+    <main>
+      <section class="intro">
+        <div><p class="context">Your Spotify queue, with a longer memory.</p><h1>Give the rest<br>a turn.</h1><p class="lede">Reach the songs buried in your playlist.<br>Pick a fresh batch, then keep listening in Spotify.</p></div>
+        <div class="record" aria-hidden="true"><div class="record-label"><span>Fresh<br>selections</span><i></i></div></div>
+      </section>
+
+      <p id="notice" role="status" aria-live="polite" hidden></p>
+
+      <div class="workspace">
+        <div class="controls">
+          <details id="setup" class="setup" open>
+            <summary><span id="setup-label">Connect your Spotify account</span><span class="summary-icon" aria-hidden="true">+</span></summary>
+            <div class="setup-body">
+              <p>Your Client ID is configured. Sign in on this computer to control Spotify on your iPhone or desktop.</p>
+              <form id="connect-form">
+                <label for="client-id">Spotify app Client ID</label>
+                <input id="client-id" name="client_id" type="text" maxlength="32" spellcheck="false" autocomplete="off" required>
+                <p class="hint">Registered redirect: <code>http://127.0.0.1:5173/callback</code></p>
+                <div class="row"><button class="primary" id="connect" type="submit">Connect to Spotify</button><button class="text-button" id="disconnect" type="button" hidden>Disconnect</button></div>
+              </form>
+              <a class="subtle-link" href="https://developer.spotify.com/dashboard" target="_blank" rel="noopener noreferrer">Open Spotify developer settings</a>
+            </div>
+          </details>
+
+          <section class="playlist-panel" aria-labelledby="playlist-heading">
+            <h2 id="playlist-heading">Choose your playlist</h2>
+            <form id="playlist-form">
+              <label for="playlist-url">Spotify playlist link</label>
+              <div class="input-row"><input id="playlist-url" type="text" placeholder="https://open.spotify.com/playlist/…" autocomplete="off" required><button id="load" type="submit" class="secondary">Load playlist</button></div>
+            </form>
+            <p class="hint">Use a playlist you own or collaborate on. All its pages are loaded, including large playlists.</p>
+
+            <div id="playlist-loaded" hidden>
+              <div class="playlist-title"><div><a id="playlist-link" href="https://open.spotify.com/" target="_blank" rel="noopener noreferrer"><h3 id="playlist-name"></h3></a><p id="playlist-meta"></p></div><span id="round" class="round"></span></div>
+              <progress id="progress" value="0" max="1" aria-label="Tracks selected this round"></progress>
+              <p id="progress-caption" class="hint"></p>
+              <div class="queue-options"><label for="batch-size">Songs to add <select id="batch-size"><option value="5">5 songs</option><option value="10" selected>10 songs</option><option value="25">25 songs</option></select></label><label class="checkbox"><input id="avoid-recent" type="checkbox" checked>Also avoid my last 50 Spotify plays</label></div>
+              <button id="queue" class="primary queue-button" type="button">Queue fresh songs <span aria-hidden="true">＋</span></button>
+              <p class="hint">Adds after songs you’ve already queued. Existing queue entries stay in place.</p>
+              <button id="reset" class="text-button reset" type="button">Start a new round…</button>
+            </div>
+          </section>
+
+          <section class="batch-panel" aria-labelledby="batch-heading">
+            <div class="section-heading"><h2 id="batch-heading">Added this session</h2><span id="batch-count"></span></div>
+            <div id="batch-empty" class="empty"><span class="empty-symbol" aria-hidden="true">♫</span><p>Your next discoveries are already in your playlist.</p><p class="hint">The songs you add here will appear in Spotify’s queue.</p></div>
+            <ol id="batch-list"></ol>
+          </section>
+        </div>
+
+        <aside>
+          <section class="listening-note"><div class="device-icon" aria-hidden="true">▣</div><h2>Listen where you like</h2><p id="device-name">Start a song on your iPhone or desktop, then add your fresh batch here.</p><button id="check-player" class="secondary" type="button">Check active device</button></section>
+          <section class="guide"><h2>A fair turn for every song</h2><p>Each batch draws from tracks this tool hasn’t selected in the current round.</p><p>Progress stays on this computer, even when you close the app. A new round starts only when you choose.</p><p class="hint">“Selected” means queued or reserved by this tool, including skipped songs. It isn’t your complete Spotify listening history.</p></section>
+          <section class="guide"><h2>For a clean start</h2><p>In Spotify, remove any manually queued songs you don’t want ahead of this batch. When the batch ends, Spotify returns to its normal playback.</p></section>
+        </aside>
+      </div>
+    </main>
+    <footer><span>Runs on this computer. Music plays in Spotify.</span><span>Fresh Queue is an independent companion.</span></footer>
+  </div>
+
+  <dialog id="reset-dialog" aria-labelledby="reset-heading"><h2 id="reset-heading">Start a new round?</h2><p>This lets previously selected songs be picked again for this playlist. Songs already in Spotify’s queue stay there.</p><div class="row"><button id="cancel-reset" class="secondary" type="button">Keep this round</button><button id="confirm-reset" class="primary" type="button">Start new round</button></div></dialog>
+</body>
+</html>
